@@ -336,20 +336,21 @@ class VehicleDR(Node):
             rcl_now = self.get_clock().now()
 
             # TODO check to see if the frame ids are swapped
-            base_transform = construct_stamped_transform(transform_trans=[pose_t[0], pose_t[1], pose_t[2]],
-                                                         transform_rot=quat_t,
-                                                         frame_id=self.odom_frame,  # self.base_frame,
-                                                         child_frame_id=self.base_frame,  # self.odom_frame,
-                                                         rcl_time=rcl_now)
-
-            base_2d_transform = construct_stamped_transform(transform_trans=[pose_t[0], pose_t[1], pose_t[2]],
+            if self.simulation:
+                base_transform = construct_stamped_transform(transform_trans=[pose_t[0], pose_t[1], pose_t[2]],
                                                             transform_rot=quat_t,
-                                                            frame_id=self.odom_frame,  # self.base_frame_2d,
-                                                            child_frame_id=self.base_frame_2d,  # self.odom_frame,
+                                                            frame_id=self.odom_frame,  # self.base_frame,
+                                                            child_frame_id=self.base_frame,  # self.odom_frame,
                                                             rcl_time=rcl_now)
 
-            self.br.sendTransform(base_transform)
-            self.br.sendTransform(base_2d_transform)
+                base_2d_transform = construct_stamped_transform(transform_trans=[pose_t[0], pose_t[1], pose_t[2]],
+                                                                transform_rot=quat_t,
+                                                                frame_id=self.odom_frame,  # self.base_frame_2d,
+                                                                child_frame_id=self.base_frame_2d,  # self.odom_frame,
+                                                                rcl_time=rcl_now)
+
+                self.br.sendTransform(base_transform)
+                self.br.sendTransform(base_2d_transform)
 
             # ROS1
             # self.br.sendTransform([pose_t[0], pose_t[1], pose_t[2]],

@@ -7,3 +7,4 @@ string BT_COMMAND_TOPIC = 'mission/bt_command'
 string BT_TIP_TOPIC = 'mission/bt_tip'
 
 string GOTO_WP_ACTION = 'mission/goto_wp_action'
+string LATEST_WP_TOPIC = 'mission/latest_wp'
