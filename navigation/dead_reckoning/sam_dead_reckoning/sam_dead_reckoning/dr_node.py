@@ -336,7 +336,7 @@ class VehicleDR(Node):
             rcl_now = self.get_clock().now()
 
             # TODO check to see if the frame ids are swapped
-            if self.simulation:
+            if self.simulation == False:
                 base_transform = construct_stamped_transform(transform_trans=[pose_t[0], pose_t[1], pose_t[2]],
                                                             transform_rot=quat_t,
                                                             frame_id=self.odom_frame,  # self.base_frame,
