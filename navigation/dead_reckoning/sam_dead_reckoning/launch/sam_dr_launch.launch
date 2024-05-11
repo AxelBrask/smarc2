@@ -36,4 +36,9 @@
     <param name="utm_frame" value="utm" />
     <param name="use_sim_time" value="true" />
   </node> -->
+
+    <node pkg="tf_convenience_topics" exec="odom_listener" name="odom_listener" output="screen" namespace="$(var robot_name)">
+    <param name="robot_name" value="$(var robot_name)" />
+    <param name="use_sim_time" value="true" />
+  </node>
 </launch>
