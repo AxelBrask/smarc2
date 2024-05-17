@@ -19,7 +19,7 @@ class Odom_listener{
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_pitch;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_roll;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_yaw;
-    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_depth;
+
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_x;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_y;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr feedback_u;
@@ -51,10 +51,9 @@ class Odom_listener{
         auto timer_callback = std::bind(&Odom_listener::publish_feedback, this);
       timer = nh_->create_wall_timer(std::chrono::milliseconds((int)(100)), timer_callback);
 
-      feedback_pitch = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_PITCH_TOPIC, 10);
-    feedback_roll = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_ROLL_TOPIC, 10);
-    feedback_yaw = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_YAW_TOPIC, 10);
-    feedback_depth = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_DEPTH_TOPIC, 10);
+    feedback_pitch = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_PITCH_TOPIC, 10);
+    feedback_roll = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ROLL_TOPIC, 10);
+    feedback_yaw = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_YAW_TOPIC, 10);
     feedback_x = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_X_TOPIC, 10);
     feedback_y = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_Y_TOPIC, 10);
     feedback_u = nh_->create_publisher<std_msgs::msg::Float64>(dead_reckoning_msgs::msg::Topics::DR_ODOM_U_TOPIC, 10);
@@ -80,7 +79,6 @@ class Odom_listener{
         current_pitch.data= p;
         current_roll.data= r;
         current_yaw.data= y;
-        current_depth.data= -odom_msg->pose.pose.position.z;
         current_x.data= odom_msg->pose.pose.position.x;
         current_y.data= odom_msg->pose.pose.position.y;
     
@@ -100,7 +98,6 @@ class Odom_listener{
         feedback_pitch->publish(current_pitch);
         feedback_roll->publish(current_roll);
         feedback_yaw->publish(current_yaw);
-        feedback_depth->publish(current_depth);
         feedback_x->publish(current_x);
         feedback_y->publish(current_y);
         feedback_u->publish(current_u);
