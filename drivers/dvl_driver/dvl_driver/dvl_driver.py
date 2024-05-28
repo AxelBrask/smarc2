@@ -53,12 +53,16 @@ class DVLDriver(Node):
     
 
     def __init__(self,namespace = None):
-        super().__init__("DVL driver", namespace=namespace)
+        super().__init__("DVL_driver", namespace=namespace)
+        self.declare_parameter("robot_name", "sam")
+        self.declare_parameter("ip", "192.168.2.95")
+        self.declare_parameter("port", 16171)
+        self.declare_parameter("log_raw_data", False)
         self.robot_name = self.get_parameter("robot_name").value
         self.dvl_frame = f"{self.robot_name}_{SamLinks.DVL_LINK}"
         
-        self.pub_raw = self.create_publisher( SamTopics.DVL_RAW_TOPIC, String, queue_size=10)
-        self.pub_relay = self.create_publisher( SamTopics.DVL_RELAY_TOPIC, Bool, queue_size=10)
+        self.pub_raw = self.create_publisher( String,SamTopics.DVL_RAW_TOPIC,qos_profile=10 )
+        self.pub_relay = self.create_publisher( Bool,SamTopics.DVL_RELAY_TOPIC,qos_profile=10)
 
         # Waterlinked parameters
         self.TCP_IP = self.get_parameter("ip").value
@@ -71,11 +75,11 @@ class DVLDriver(Node):
         self.oldJson = ""
 
         # Topics for debugging
-        self.dvl_en_pub = self.create_publisher('dvl_enable', Bool, queue_size=10)
+        self.dvl_en_pub = self.create_publisher(Bool,'dvl_enable',  qos_profile=10)
 
         # Service to start/stop DVL and DVL data publisher
-        self.switch_srv = self.create_service(SamTopics.DVL_ON_OFF_SERVICE, SetBool, self.dvl_switch_cb)
-        self.dvl_pub = self.create_publisher(SamTopics.DVL_TOPIC, DVL, queue_size=10)
+        self.switch_srv = self.create_service(SetBool,SamTopics.DVL_ON_OFF_SERVICE,  self.dvl_switch_cb)
+        self.dvl_pub = self.create_publisher(DVL,SamTopics.DVL_TOPIC,  qos_profile=10)
         # self.switch = False
 
         self.data_buffer = b""

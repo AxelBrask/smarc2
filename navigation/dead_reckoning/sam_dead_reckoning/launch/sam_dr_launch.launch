@@ -1,7 +1,7 @@
 <launch>
   <arg name="robot_name" default="sam" />
   <group>
-    <push-ros-namespace namespace="$(var robot_name)"/>
+
 
   <node pkg="sam_dead_reckoning" exec="depth_node" name="depth_node" output="screen" namespace="$(var robot_name)">
     <param name="robot_name" value="$(var robot_name)" />
