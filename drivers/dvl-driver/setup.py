@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'dvl_driver = dvl_driver.dvl_driver:main',
         ],
     },
 )

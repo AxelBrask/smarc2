@@ -55,22 +55,15 @@ class DVLDriver(Node):
     def __init__(self,namespace = None):
         super().__init__("DVL driver", namespace=namespace)
         self.robot_name = self.get_parameter("robot_name").value
-        # self.dvl_frame = rospy.get_param('~dvl_frame', 'sam/dvl_link')
         self.dvl_frame = f"{self.robot_name}_{SamLinks.DVL_LINK}"
-        self.dvl_topic = SamTopics.DVL_TOPIC
-        self.dvl_ctrl_srv = self.get_parameter('~dvl_on_off_srv', 'core/toggle_dvl')
-        # self.dvl_raw_topic = rospy.get_param('~dvl_raw_topic', 'dvl_raw_output')
-        self.dvl_raw_topic = SamTopics.DVL_RAW_TOPIC
-        # self.relay_topic = rospy.get_param('~relay_topic', 'sam/core/dvl_relay')
-        self.dvl_raw_topic = SamTopics.DVL_RELAY_TOPIC
-
-        self.pub_raw = self.create_publisher( self.dvl_raw_topic, String, queue_size=10)
-        self.pub_relay = self.create_publisher( self.relay_topic, Bool, queue_size=10)
+        
+        self.pub_raw = self.create_publisher( SamTopics.DVL_RAW_TOPIC, String, queue_size=10)
+        self.pub_relay = self.create_publisher( SamTopics.DVL_RELAY_TOPIC, Bool, queue_size=10)
 
         # Waterlinked parameters
-        self.TCP_IP = self.get_parameter("~ip", "192.168.2.95").value
-        self.TCP_PORT = self.get_parameter("~port", 16171)
-        self.do_log_raw_data = self.get_parameter("~do_log_raw_data", False)
+        self.TCP_IP = self.get_parameter("ip").value
+        self.TCP_PORT = self.get_parameter("port").value
+        self.do_log_raw_data = self.get_parameter("log_raw_data").value
 
         # Waterlinked variables
         self.s = None
@@ -81,8 +74,8 @@ class DVLDriver(Node):
         self.dvl_en_pub = self.create_publisher('dvl_enable', Bool, queue_size=10)
 
         # Service to start/stop DVL and DVL data publisher
-        self.switch_srv = self.create_service(self.dvl_ctrl_srv, SetBool, self.dvl_switch_cb)
-        self.dvl_pub = self.create_publisher(self.dvl_topic, DVL, queue_size=10)
+        self.switch_srv = self.create_service(SamTopics.DVL_ON_OFF_SERVICE, SetBool, self.dvl_switch_cb)
+        self.dvl_pub = self.create_publisher(SamTopics.DVL_TOPIC, DVL, queue_size=10)
         # self.switch = False
 
         self.data_buffer = b""

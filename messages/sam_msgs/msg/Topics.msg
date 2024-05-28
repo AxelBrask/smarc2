@@ -30,3 +30,5 @@ string SIDESCAN_TOPIC = 'payload/sidescan'
 
 string DVL_RAW_TOPIC = 'core/dvl_raw_output'
 string DVL_RELAY_TOPIC = 'core/dvl_relay'
+
+string DVL_ON_OFF_SERVICE = 'core/toggle_dvl'
