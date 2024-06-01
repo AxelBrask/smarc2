@@ -52,33 +52,11 @@ if(BUILD_TESTING)
     target_link_libraries(check_datasheet_constanst driver_stim300)
   endif()
 endif()
-# if(BUILD_TESTING)
-#   find_package(ament_lint_auto REQUIRED)
-#   ament_lint_auto_find_test_dependencies()
 
-#   # Add test for the driver
-#   ament_add_gtest(check_driver_stim300
-#     test/check_driver_stim300.cpp
-#     test/mock_serial_driver.h
-#   )
-#     target_link_libraries(check_driver_stim300 driver_stim300)
-#   endif()
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
-#   # Add test for the constants
-#   ament_add_gtest(check_datasheet_constanst
-#     test/check_stim300_constants.cpp
-#   )
-#   if(TARGET check_datasheet_constanst)
-#     target_link_libraries(check_datasheet_constanst
-#       driver_stim300
-#       GTest::GTest
-#       GTest::Main
-#       gmock
-#     )
-#   endif()
-
-  # add_test(NAME check_driver_stim300 COMMAND check_driver_stim300)
-  # add_test(NAME check_datasheet_constanst COMMAND check_datasheet_constanst)
-# endif()
 
 ament_package()
