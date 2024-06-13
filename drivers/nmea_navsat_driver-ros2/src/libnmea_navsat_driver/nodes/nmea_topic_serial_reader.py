@@ -47,6 +47,7 @@ def main(args=None):
 
     serial_port = driver.declare_parameter('port', '/dev/ttyUSB0').value
     serial_baud = driver.declare_parameter('baud', 4800).value
+    gps_frame = driver.declare_parameter('frame_id', 'gps').value
 
     # Get the frame_id
     frame_id = driver.get_frame_id()
@@ -59,7 +60,8 @@ def main(args=None):
 
                 sentence = Sentence()
                 sentence.header.stamp = driver.get_clock().now().to_msg()
-                sentence.header.frame_id = frame_id
+                sentence.header.frame_id = gps_frame
+                # sentence.header.frame_id = frame_id
                 sentence.sentence = data.decode("ascii")
                 nmea_pub.publish(sentence)
 
