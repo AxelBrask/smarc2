@@ -18,4 +18,19 @@
 	path = simulation/SMARCUnityStandard
 	url = https://github.com/smarc-project/SMARCUnityStandard
 	branch = master
-
+[submodule "drivers/stim300"]
+	path = drivers/stim300
+	url = git@github.com:AxelBrask/stim300.git
+	branch = humble
+[submodule "drivers/nmea_navsat_driver"]
+	path = drivers/nmea_navsat_driver
+	url = git@github.com:AxelBrask/nmea_navsat_driver.git
+	branch = humble
+[submodule "drivers/dvl-a50-ros-driver"]
+	path = drivers/dvl-a50-ros-driver
+	url = git@github.com:AxelBrask/dvl-a50-ros-driver.git
+	branch = humble
+[submodule "drivers/sbg_ros2_driver"]
+	path = drivers/sbg_ros2_driver
+	url = git@github.com:AxelBrask/sbg_ros2_driver.git
+	branch = humble
