@@ -18,6 +18,4 @@
 	path = simulation/SMARCUnityStandard
 	url = https://github.com/smarc-project/SMARCUnityStandard
 	branch = master
-[submodule "drivers/sbg_ros2_driver"]
-	path = drivers/sbg_ros2_driver
-	url = https://github.com/SBG-Systems/sbg_ros2_driver.git
+

@@ -1,0 +1,75 @@
+<launch>
+    <arg name="debug" default="0"/>
+    <arg name="mode" default="default"/>
+    <arg name="robot_name" default="sam"/>
+    <arg name="gps_port" default="/dev/ttyACM1"/>
+    <arg name="gps_baud" default="115200"/>c
+
+    <arg name="with_gps" default="true"/>
+    <arg name="uav_can_interface" default="can0"/>
+
+<group>
+
+        
+
+
+        <!--<node name="joint_state_publisher" pkg="joint_state_publisher" exec="joint_state_publisher" output="screen" respawn="true">
+            <param name="use_gui" value="false"/>
+            <rosparam param="source_list">["/sam/command_states"]</rosparam>
+        </node> -->
+        
+         <!--SBG driver -->
+        <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
+            <param from="$(find-pkg-share sbg_driver)/config/ellipse_A_sam.yaml"/>
+        </node>
+
+        <node name="sbg_2_ros" pkg="sbg_driver" exec="sbg_to_ros.py" output="screen" namespace="$(var robot_name)">
+            <param name="sbg_imu_data" value="sbg/imu_data"/>
+            <param name="sbg_ekf_quat" value="sbg/ekf_quat"/>
+            <param name="sbg_mag" value="sbg/mag"/>
+            <param name="sbg_utc_time" value="sbg/utc_time"/>
+        </node>
+        <!--STIM300 driver -->
+        <node pkg="driver_stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
+            <param name = "device_name" value="/dev/ttyUSB0" />
+            <param name =  "stanard_deviation_of_gyro" value="0.0004" />
+            <param name = "stanard_deviation_of_acc" value="0.004" />
+            <param name = "sample_rate" value = "125" />
+
+        </node>
+        <!--DVL driver -->
+        <node pkg="dvl_driver" exec="dvl_driver" name="dvl_driver"  output="screen" namespace="$(var robot_name)">
+            <param name="robot_name" value="$(var robot_name)" />
+            <param name="ip" value="192.168.2.95" />
+            <param name="port" value="16171" />
+            <param name="log_raw_data" value="false" />
+        </node>
+
+        <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check.py" output="screen" namespace="$(var robot_name)">
+            <remap from="lcg_cmd" to="core/lcg_cmd"/>
+            <remap from="vbs_cmd" to="core/vbs_cmd"/>
+        </node>
+
+        <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter.py" output="screen" namespace="$(var robot_name)">
+            <remap from="rpm_cmd" to="core/rpm_cmd"/>
+            <remap from="thrust_vector_cmd" to="core/thrust_vector_cmd"/>
+        </node>
+        <!--GPS driver -->
+        <node name="navsat" pkg="nmea_navsat_driver" exec="nmea_serial_driver" output="screen" if="$(var with_gps)" namespace="$(var robot_name)">
+            <param name="port" value="$(var gps_port)"/>
+            <param name="baud" value="$(var gps_baud)"/>
+            <param name="frame_id" value="gps_link"/>
+            <remap from="fix" to="gps"/>
+        </node>
+    </group>
+    <!--
+    <include file="$(find-pkg-share sam_uavcan_bridge)/launch/bridge.launch.xml">
+        <param name="uav_can_interface" value="$(var uav_can_interface)"/>
+    </include>
+
+    <include file="$(find-pkg-share message_joiner)/launch/joiner.launch.xml">
+        <param name="uav_can_interface" value="$(var uav_can_interface)"/>
+    </include>
+    -->
+</launch>
+
