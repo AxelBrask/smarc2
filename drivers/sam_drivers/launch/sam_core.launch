@@ -30,7 +30,7 @@
             <param name="sbg_utc_time" value="sbg/utc_time"/>
         </node>
         <!--STIM300 driver -->
-        <node pkg="driver_stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
+        <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
             <param name = "device_name" value="/dev/ttyUSB0" />
             <param name =  "stanard_deviation_of_gyro" value="0.0004" />
             <param name = "stanard_deviation_of_acc" value="0.004" />
