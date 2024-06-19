@@ -36,6 +36,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Topics.msg"
   "msg/Links.msg"
   "srv/UavcanUpdateBattery.srv"
+  "action/SystemsCheck.action"
   DEPENDENCIES geometry_msgs sensor_msgs std_msgs
  )
 
