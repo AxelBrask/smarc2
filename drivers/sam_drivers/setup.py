@@ -17,12 +17,14 @@ setup(
     zip_safe=True,
     maintainer='Axel',
     maintainer_email='axbr@kth.se',
-    description='TODO: Package description',
+    description='Contains the launch files of the drivers for SAM ',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'sam_joint_state_converter = sam_drivers.sam_joint_state_converter:main',
+            'sam_startup_check = sam_drivers.sam_startup_check:main',
+
         ],
     },
 )

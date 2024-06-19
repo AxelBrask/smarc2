@@ -45,12 +45,12 @@
             <param name="log_raw_data" value="false" />
         </node>
 
-        <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check.py" output="screen" namespace="$(var robot_name)">
+        <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check" output="screen" namespace="$(var robot_name)">
             <remap from="lcg_cmd" to="core/lcg_cmd"/>
             <remap from="vbs_cmd" to="core/vbs_cmd"/>
         </node>
 
-        <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter.py" output="screen" namespace="$(var robot_name)">
+        <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter" output="screen" namespace="$(var robot_name)">
             <remap from="rpm_cmd" to="core/rpm_cmd"/>
             <remap from="thrust_vector_cmd" to="core/thrust_vector_cmd"/>
         </node>
