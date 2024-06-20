@@ -17,7 +17,6 @@ class SamJointStateConverter(Node):
         self.joint_state_pub.publish(state)
 
     def thruster_callback(self, msg):
-        self.get_logger().info("Received thruster RPMs: %f, %f", msg.thruster_1_rpm, msg.thruster_2_rpm)
         state = JointState()
         state.name = ["sam/thruster_joint_1", "sam/thruster_joint_2"]
         self.velocities = [2.*math.pi/60.*float(msg.thruster_1_rpm), 2.*math.pi/60.*float(msg.thruster_2_rpm)]
@@ -25,7 +24,7 @@ class SamJointStateConverter(Node):
         self.joint_state_pub.publish(state)
 
     def vector_callback(self, msg):
-        self.get_logger().info("Received thruster angles: %f, %f", msg.thruster_vertical_radians, msg.thruster_horizontal_radians)
+
         state = JointState()
         state.name = ["sam/shaft_joint1", "sam/shaft_joint2"]
         state.position = [msg.thruster_vertical_radians, msg.thruster_horizontal_radians]
@@ -38,7 +37,6 @@ class SamJointStateConverter(Node):
         self.velocities = [0., 0.]
 
         self.thruster_sub = self.create_subscription(ThrusterRPMs,Topics.RPM_CMD_TOPIC, self.thruster_callback,callback_group=ReentrantCallbackGroup(), qos_profile=10)
-        self
         # self.vector_sub = self.create_subscription(ThrusterAngles,"~thrust_vector_cmd",  self.vector_callback)
         self.vector_sub = self.create_subscription(ThrusterAngles,Topics.THRUST_VECTOR_CMD_TOPIC,  self.vector_callback,callback_group=ReentrantCallbackGroup(),qos_profile=10)
 
