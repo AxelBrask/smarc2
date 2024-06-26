@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import rclpy
+from rclpy import wait_for_message
 from rclpy.node import Node
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from sam_msgs.msg import PercentStamped, Leak, Topics
@@ -23,7 +24,7 @@ class StartupCheckServer(Node):
         feedback_topic = Topics.LEAK_TOPIC
 
         try:
-            leak = rclpy.wait_for_message(feedback_topic, Leak, 3.)
+            leak = rclpy.wait_for_message(Leak,self,feedback_topic)#(feedback_topic, Leak, 3.)
         except Exception:
             self.get_logger().info("Could not get leak message on %s, aborting...", feedback_topic)
             self._result.status = "Could not get leak message on %s, aborting..." % feedback_topic
@@ -46,7 +47,7 @@ class StartupCheckServer(Node):
         feedback_topic = Topics.DEPTH_TOPIC
 
         try:
-            pressure = rclpy.wait_for_message(feedback_topic, FluidPressure, 3.)
+            pressure = rclpy.wait_for_message( FluidPressure,self,feedback_topic)
         except Exception:
             self.get_logger().info("Could not get pressure on %s, aborting...", feedback_topic)
             self._result.status = "Could not get pressure on %s, aborting..." % feedback_topic
@@ -69,7 +70,7 @@ class StartupCheckServer(Node):
         feedback_topic = Topics.LCG_FB_TOPIC
 
         try:
-            lcg_feedback = rclpy.wait_for_message(feedback_topic, PercentStamped, 1.)
+            lcg_feedback = rclpy.wait_for_message( PercentStamped,self,feedback_topic)
         except Exception:
             self.get_logger().info("Could not get feedback on %s, aborting...", feedback_topic)
             self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
@@ -97,7 +98,7 @@ class StartupCheckServer(Node):
         feedback_topic = Topics.VBS_FB_TOPIC
 
         try:
-            vbs_feedback = rclpy.wait_for_message(feedback_topic, PercentStamped, 1.)
+            vbs_feedback = rclpy.wait_for_message(PercentStamped,self,feedback_topic)
         except Exception:
             self.get_logger().info("Could not get feedback on %s, aborting...", feedback_topic)
             self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
