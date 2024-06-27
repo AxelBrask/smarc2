@@ -4,7 +4,8 @@ import rclpy
 from rclpy.node import Node
 import time
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
-from sam_msgs.msg import PercentStamped, Leak, Topics
+from sam_msgs.msg import PercentStamped, Topics
+from smarc_msgs.msg import Leak
 from sensor_msgs.msg import FluidPressure
 from std_msgs.msg import Header
 # from sam_msgs.msg import  SystemsCheckFeedback, SystemsCheckResult
@@ -24,9 +25,8 @@ class StartupCheckServer(Node):
         feedback_topic = Topics.LEAK_TOPIC
 
         try:
-            leak = self.wait_for_message(Leak,feedback_topic,3.)#(feedback_topic, Leak, 3.)
+             leak = self.wait_for_message(Leak,feedback_topic,3.)
         except Exception:
-            # self.get_logger().info("Could not get leak message on %s, aborting...", feedback_topic)
             self.get_logger().info(f"Could not get leak message on {feedback_topic}, aborting...")
             self._result.status = "Could not get leak message on %s, aborting..." % feedback_topic
             return False
@@ -36,7 +36,7 @@ class StartupCheckServer(Node):
             self._result.status = "Got leak sensor and detected leaks, aborting..."
             return False
         else:
-            self.get_logger().info("hallamöGot leak sensor and no leaks, seems ok!")
+            self.get_logger().info("Got leak sensor and no leaks, seems ok!")
             self._feedback.status = "Got leak sensor and no leaks, seems ok!"
 
         return True
@@ -50,12 +50,10 @@ class StartupCheckServer(Node):
         try:
             pressure = self.wait_for_message(FluidPressure,feedback_topic,3.)
         except Exception:
-            # self.get_logger().info("Could not get pressure on %s, aborting...", feedback_topic)
             self.get_logger().info(f"Could not get pressure on {feedback_topic}, aborting...")
             self._result.status = "Could not get pressure on %s, aborting..." % feedback_topic
             return False
 
-        # self.get_logger().info("Got pressure message with value %f, seems ok!", pressure.fluid_pressure)
         self.get_logger().info(f"Got pressure message with value {pressure.fluid_pressure}, seems ok!")
         self._feedback.status = "Got pressure message with value %f, seems ok!" % pressure.fluid_pressure
 
@@ -75,18 +73,15 @@ class StartupCheckServer(Node):
         try:
             lcg_feedback = self.wait_for_message( PercentStamped,feedback_topic,1.)
         except Exception:
-            # self.get_logger().info("Could not get feedback on %s, aborting...", feedback_topic)
             self.get_logger().info(f"Could not get feedback on {feedback_topic}, aborting...")
             self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
             return False
 
         if abs(lcg_feedback.value - lcg_setpoint) > 2.:
-            # self.get_logger().info("Set point was %f and value was %f, aborting test...", lcg_setpoint, lcg_feedback.value)
             self.get_logger().info(f"Set point was {lcg_setpoint} and value was {lcg_feedback.value}, aborting test...")
             self._result.status = "Set point was %f and value was %f, aborting test..." % (lcg_setpoint, lcg_feedback.value)
             return False
         else:
-            # self.get_logger().info("Set point was %f and value was %f, seems ok!", lcg_setpoint, lcg_feedback.value)
             self.get_logger().info(f"Set point was {lcg_setpoint} and value was {lcg_feedback.value}, seems ok!")
             self._feedback.status = "Set point was %f and value was %f, seems ok!" % (lcg_setpoint, lcg_feedback.value)
             return True
@@ -97,10 +92,8 @@ class StartupCheckServer(Node):
 
         self.vbs_cmd.publish(PercentStamped(value=vbs_setpoint, header=self.header)) # publish setpoint 50
 
-        # self.get_logger().info("Published vbs setpoint at %f, waiting....", vbs_setpoint)
         self.get_logger().info(f"Published vbs setpoint at {vbs_setpoint}, waiting....")
 
-        # rclpy.sleep(20.)
         time.sleep(20.) # wait for 5s to reach 50
         # get vbs feedback, wait for 1s
         feedback_topic = Topics.VBS_FB_TOPIC
@@ -108,18 +101,15 @@ class StartupCheckServer(Node):
         try:
             vbs_feedback = self.wait_for_message(PercentStamped,feedback_topic,1.)
         except Exception:
-            # self.get_logger().info("Could not get feedback on %s, aborting...", feedback_topic)
             self.get_logger().info(f"Could not get feedback on {feedback_topic}, aborting...")
             self._result.status = "Could not get feedback on %s, aborting..." % feedback_topic
             return False
 
         if abs(vbs_feedback.value - vbs_setpoint) > 2.:
-            # self.get_logger().info("Set point was %f and value was %f, aborting test...", vbs_setpoint, vbs_feedback.value)
             self.get_logger().info(f"Set point was {vbs_setpoint} and value was {vbs_feedback.value}, aborting test...")
             self._result.status = "Set point was %f and value was %f, aborting test..." % (vbs_setpoint, vbs_feedback.value)
             return False
         else:
-            # self.get_logger().info("Set point was %f and value was %f, seems ok!", vbs_setpoint, vbs_feedback.value)
             self.get_logger().info(f"Set point was {vbs_setpoint} and value was {vbs_feedback.value}, seems ok!")
             self._feedback.status = "Set point was %f and value was %f, seems ok!" % (vbs_setpoint, vbs_feedback.value)
             return True
@@ -129,8 +119,8 @@ class StartupCheckServer(Node):
         self._action_name = name
         self._as = ActionServer(self, SystemsCheck ,self._action_name, execute_callback=self.execute_cb,goal_callback=self.goal_cb)
 
-        self.lcg_cmd = self.create_publisher(PercentStamped,Topics.LCG_CMD_TOPIC,  callback_group = ReentrantCallbackGroup() ,qos_profile=10)
-        self.vbs_cmd = self.create_publisher(PercentStamped,Topics.VBS_CMD_TOPIC, callback_group = ReentrantCallbackGroup() ,qos_profile=10)
+        self.lcg_cmd = self.create_publisher(PercentStamped,Topics.LCG_CMD_TOPIC ,qos_profile=10)
+        self.vbs_cmd = self.create_publisher(PercentStamped,Topics.VBS_CMD_TOPIC ,qos_profile=10)
         self._feedback = SystemsCheck.Feedback()
         self._result = SystemsCheck.Result()
         # self._as.start()
@@ -156,21 +146,21 @@ class StartupCheckServer(Node):
 
         goal_handle.publish_feedback(self._feedback)
 
-        # if not self.test_lcg(88.):
-        #     # goal_handle.abort()
-        #     return #self._result
+        if not self.test_lcg(88.):
+            # goal_handle.abort()
+            return #self._result
 
-        # goal_handle.publish_feedback(self._feedback)
+        goal_handle.publish_feedback(self._feedback)
 
-        # if not self.test_vbs(0.):
-        #     goal_handle.abort()
-        #     return self._result
+        if not self.test_vbs(0.):
+            goal_handle.abort()
+            return self._result
 
-        # goal_handle.publish_feedback(self._feedback)
+        goal_handle.publish_feedback(self._feedback)
 
-        # if not self.test_vbs(100.):
-        #     goal_handle.abort()
-        #     return self._result
+        if not self.test_vbs(100.):
+            goal_handle.abort()
+            return self._result
 
         goal_handle.publish_feedback(self._feedback)
 
@@ -200,10 +190,13 @@ class StartupCheckServer(Node):
 
         def callback(msg):
             future.set_result(msg)
-        self.get_logger().info(f"Waiting for message on {topic}...")
         sub = self.create_subscription(msg_type, topic, callback, 10)
         
-        rclpy.spin_until_future_complete(self, future, timeout_sec=timeout_sec)
+        try:
+            rclpy.spin_until_future_complete(self, future, timeout_sec=timeout_sec)
+        except Exception as e:
+            self.get_logger().error(f"Error while waiting for message on {topic}: {e}")
+            raise
 
         self.destroy_subscription(sub)
 
@@ -216,8 +209,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     check_server = StartupCheckServer("sam_startup_check")
-    executor = MultiThreadedExecutor()
-    rclpy.spin(check_server,executor=executor)
+    rclpy.spin(check_server)
 
     check_server.destroy_node()
     rclpy.shutdown()
