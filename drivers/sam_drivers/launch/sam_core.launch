@@ -2,7 +2,7 @@
     <arg name="debug" default="0"/>
     <arg name="mode" default="default"/>
     <arg name="robot_name" default="sam"/>
-    <arg name="gps_port" default="/dev/ttyACM1"/>
+    <arg name="gps_port" default="/dev/ttyACM0"/>
     <arg name="gps_baud" default="115200"/>
     <arg name="prefix" default="$(var robot_name)/"/>
     <arg name="with_gps" default="true"/>
@@ -12,17 +12,17 @@
 <group>
 
         
-        <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" respawn="true" output="screen">
+        <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" respawn="true" output="screen" >
             <param name="robot_description" 
-            value="$(command '$(find-exec xacro) $(find-pkg-share sam_description)/urdf/$(var robot_urdf).xacro') debug = 1 namespace=$(var robot_name)"/>
+            value="$(command 'xacro $(find-pkg-share sam_description)/urdf/$(var robot_urdf).xacro') "/>
         </node>
 
         <node name="joint_state_publisher" pkg="joint_state_publisher" exec="joint_state_publisher">
             <param name="rate" value="300"/>
             <param name="source_list" value="['command_states']"/>
-        </node>
+        </node> 
 
-        <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
+        <!-- <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
             <param from="$(find-pkg-share sbg_driver)/config/ellipse_A_sam.yaml"/>
         </node>
 
@@ -31,9 +31,9 @@
             <param name="sbg_ekf_quat" value="sbg/ekf_quat"/>
             <param name="sbg_mag" value="sbg/mag"/>
             <param name="sbg_utc_time" value="sbg/utc_time"/>
-        </node>
+        </node> -->
       
-        <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
+        <!-- <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
             <param name = "device_name" value="/dev/ttyUSB0" />
             <param name =  "stanard_deviation_of_gyro" value="0.0004" />
             <param name = "stanard_deviation_of_acc" value="0.004" />
@@ -50,7 +50,7 @@
         <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check" output="screen" namespace="$(var robot_name)"></node>
 
         <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter" output="screen" namespace="$(var robot_name)"> </node>
-
+        -->
         <node name="navsat" pkg="nmea_navsat_driver" exec="nmea_serial_driver" output="screen" if="$(var with_gps)" namespace="$(var robot_name)">
             <param name="port" value="$(var gps_port)"/>
             <param name="baud" value="$(var gps_baud)"/>

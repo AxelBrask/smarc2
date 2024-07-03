@@ -1,0 +1,68 @@
+<launch>
+
+  <arg name="robot_name" default="sam"/>
+
+  <!-- SSS params -->
+  <arg name="sss_ip" default="192.168.2.63"/>
+  <arg name="sss_port" default="57349"/>
+  <arg name="sss_out_file" default="test.dvs"/>
+  <arg name="high_freq" default="false"/>
+  <arg name="range" default="40.0"/>
+
+   <!-- Serial parameters 
+   <arg name="driver_port" default="$(optenv NANOMODEM_PORT /dev/ttyUSB3)" />
+   <arg name="driver_baud" default="$(optenv NANOMODEM_BAUD 9600)" /> -->
+
+  <group>
+    <node pkg="dv_sss_driver" exec="driver_node" name="sss_driver_node" output="screen" namespace = '$(var robot_name)'>
+        <param name="ip" value="$(var sss_ip)"/>
+        <param name="port" value="$(var sss_port)"/>
+        <param name="out_file" value="$(var sss_out_file)"/>
+        <param name="high_freq" value="$(var high_freq)"/>
+        <param name="range" value="$(var range)"/>
+    </node>
+
+    <group>
+
+      <!-- port cam -->
+      <node name="cam_port" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload" >
+          <param from ="$(find-pkg-share sam_drivers)/config/cam_port.yml"/>
+      </node>
+
+      <!-- <node pkg="rosservice" type="rosservice" name="stop_cam" args="call /sam/payload/cam_port/stop_capture {}" /> 
+      <execute_process
+        cmd="ros2 service call /sam/payload/cam_port/stop_capture std_srvs/srv/Empty {} "
+        output="screen"
+      /> -->
+      <!-- starboard cam -->
+      <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
+          <param from ="$(find-pkg-share sam_drivers)/config/cam_starboard.yml"/>
+      </node>
+
+      <!-- starboard forward -->
+      <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
+          <param from ="$(find-pkg-share sam_drivers)/config/cam_forward.yml"/>
+      </node>
+
+      <!-- starboard down -->
+      <!-- <node name="cam_down" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
+          <param from ="$(find-pkg-share sam_drivers)/config/cam_down.yml"/>
+      </node> -->
+
+
+    </group>
+  
+  <!-- Serial parameters  -->
+  <!-- <arg name="driver_port" default="$(optenv NANOMODEM_PORT /dev/ttyUSB3)" />
+  <arg name="driver_baud" default="$(optenv NANOMODEM_BAUD 9600)" /> -->
+
+  <!-- Load labust nanomodem driver -->
+  <!--<node pkg="ros_trilux" type="trilux_node" name="fluorometer_node" output="screen">
+      <param name="port" value="$(arg driver_port)"/>
+      <param name="baud" value="$(arg driver_baud)"/>
+  </node>-->
+
+
+  </group>
+
+</launch>
