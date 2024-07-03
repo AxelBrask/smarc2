@@ -186,5 +186,5 @@
   </joint>
 
   </xacro:macro>
-<xacro:sam_auv debug="false"/>
+<xacro:sam_auv debug="0"/>
 </robot>
