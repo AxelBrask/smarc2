@@ -14,7 +14,6 @@ def convert(c):
 
 
 def callback(img, msg: Sidescan):
-
     #print msg
 
     #for p in msg.sidescan.sidescan.port_channel:
@@ -32,20 +31,29 @@ def callback(img, msg: Sidescan):
     img[1:, :] = img[:-1, :]
     img[0, :] = meas
 
-rclpy.init()
-node = Node('sss_viewer')
 
-img = np.zeros((1000, 2 * 1000), dtype=np.ubyte)  # dtype=float) #
-cv2.namedWindow('Sidescan image', cv2.WINDOW_NORMAL)
-cv2.resizeWindow('Sidescan image', 2 * 256, 1000)
+def main(args = None):
+    rclpy.init(args=args)
+    node = Node('sss_viewer')
 
-sub = node.create_subscription(Sidescan,Topics.SIDESCAN_TOPIC, partial(callback, img),qos_profile=10)
+    img = np.zeros((1000, 2 * 1000), dtype=np.ubyte)  # dtype=float) #
+    cv2.namedWindow('Sidescan image', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('Sidescan image', 2 * 256, 1000)
 
-# spin() simply keeps python from exiting until this node is stopped
-# r = rclpy.Rate(5)  # 10hz
-r = node.create_rate(5)
-while rclpy.ok:
-    resized = cv2.resize(img, (2 * 256, 1000), interpolation=cv2.INTER_AREA)
-    cv2.imshow("Sidescan image", resized)
-    cv2.waitKey(1)
-    r.sleep()
+    sub = node.create_subscription(Sidescan,Topics.SIDESCAN_TOPIC, partial(callback, img),qos_profile=10)
+
+    # spin() simply keeps python from exiting until this node is stopped
+    # r = rclpy.Rate(5)  # 10hz
+    try:
+        while rclpy.ok():
+            rclpy.spin_once(node,timeout_sec=0.1)
+            resized = cv2.resize(img, (2 * 256, 1000), interpolation=cv2.INTER_AREA)
+            cv2.imshow("Sidescan image", resized)
+            cv2.waitKey(1)
+    except KeyboardInterrupt:
+        pass
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
