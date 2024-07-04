@@ -20,12 +20,12 @@
         <param name="out_file" value="$(var sss_out_file)"/>
         <param name="high_freq" value="$(var high_freq)"/>
         <param name="range" value="$(var range)"/>
-    </node>
+    </node> 
 
-    <group>
+
 
       <!-- port cam -->
-      <node name="cam_port" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload" >
+      <node name="cam_port" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_port" >
           <param from ="$(find-pkg-share sam_drivers)/config/cam_port.yml"/>
       </node>
 
@@ -35,12 +35,12 @@
         output="screen"
       /> -->
       <!-- starboard cam -->
-      <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
+      <node name="cam_starboard" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_starboard">
           <param from ="$(find-pkg-share sam_drivers)/config/cam_starboard.yml"/>
       </node>
 
       <!-- starboard forward -->
-      <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace = "payload">
+      <node name="cam_forward" pkg="usb_cam" exec="usb_cam_node_exe" output="screen" namespace="$(var robot_name)/payload/cam_forward">
           <param from ="$(find-pkg-share sam_drivers)/config/cam_forward.yml"/>
       </node>
 
@@ -50,7 +50,6 @@
       </node> -->
 
 
-    </group>
   
   <!-- Serial parameters  -->
   <!-- <arg name="driver_port" default="$(optenv NANOMODEM_PORT /dev/ttyUSB3)" />
