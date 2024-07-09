@@ -18,3 +18,7 @@
 	path = simulation/SMARCUnityStandard
 	url = https://github.com/smarc-project/SMARCUnityStandard
 	branch = master
+[submodule "vehicles/hardware/sam/sam_common"]
+	path = vehicles/hardware/sam/sam_common
+	url = git@github.com:AxelBrask/sam_common.git
+	branch = humble
