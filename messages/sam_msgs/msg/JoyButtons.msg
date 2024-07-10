@@ -1,16 +1,21 @@
 std_msgs/Header header
 
-# d-pad (arrow keys)
-bool dpad_up
-bool dpad_down
-bool dpad_left
-bool dpad_right
+bool teleop_enable
+bool assited_driving
 
-# face buttons
-bool face_triangle
-bool face_x
-bool face_square
-bool face_circle
+# left joystick
+float32 left_x
+float32 left_y
+
+# right joystick
+float32 right_x
+float32 right_y
+
+# d-pad
+bool d_up
+bool d_down
+bool d_left
+bool d_right
 
 # shoulder buttons
 bool shoulder_l1
