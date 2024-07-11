@@ -22,7 +22,7 @@
             <param name="source_list" value="['command_states']"/>
         </node> 
 
-        <!-- <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
+        <node name="sbg_ellipseA" pkg="sbg_driver" exec="sbg_device" output="screen" namespace="$(var robot_name)">
             <param from="$(find-pkg-share sbg_driver)/config/ellipse_A_sam.yaml"/>
         </node>
 
@@ -31,26 +31,26 @@
             <param name="sbg_ekf_quat" value="sbg/ekf_quat"/>
             <param name="sbg_mag" value="sbg/mag"/>
             <param name="sbg_utc_time" value="sbg/utc_time"/>
-        </node> -->
+        </node>
       
-        <!-- <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
-            <param name = "device_name" value="/dev/ttyUSB0" />
+         <node pkg="stim300" exec="stim300_driver" name="stim300_driver" output="screen" namespace = "$(var robot_name)">
+            <param name = "device_name" value="/dev/ttyUSB4" />
             <param name =  "stanard_deviation_of_gyro" value="0.0004" />
             <param name = "stanard_deviation_of_acc" value="0.004" />
             <param name = "sample_rate" value = "125" />
         </node>
 
-        <node pkg="dvl_driver" exec="dvl_driver" name="dvl_driver"  output="screen" namespace="$(var robot_name)">
+        <!-- <node pkg="dvl_driver" exec="dvl_driver" name="dvl_driver"  output="screen" namespace="$(var robot_name)">
             <param name="robot_name" value="$(var robot_name)" />
             <param name="ip" value="192.168.2.95" />
             <param name="port" value="16171" />
             <param name="log_raw_data" value="false" />
-        </node>
+        </node> -->
 
         <node name="startup_check" pkg="sam_drivers" exec="sam_startup_check" output="screen" namespace="$(var robot_name)"></node>
 
         <node name="sam_joint_state_converter" pkg="sam_drivers" exec="sam_joint_state_converter" output="screen" namespace="$(var robot_name)"> </node>
-        -->
+
         <node name="navsat" pkg="nmea_navsat_driver" exec="nmea_serial_driver" output="screen" if="$(var with_gps)" namespace="$(var robot_name)">
             <param name="port" value="$(var gps_port)"/>
             <param name="baud" value="$(var gps_baud)"/>
