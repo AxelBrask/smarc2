@@ -30,7 +30,4 @@
 	path = drivers/dvl-a50-ros-driver
 	url = git@github.com:AxelBrask/dvl-a50-ros-driver.git
 	branch = humble
-[submodule "drivers/sbg_ros2_driver"]
-	path = drivers/sbg_ros2_driver
-	url = git@github.com:AxelBrask/sbg_ros2_driver.git
-	branch = humble
+
