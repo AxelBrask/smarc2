@@ -27,6 +27,8 @@ string SBG_IMU_TOPIC = 'core/sbg_imu'
 string PRESS_DEPTH20_TOPIC = 'core/depth20_pressure'
 
 string SIDESCAN_TOPIC = 'payload/sidescan'
+string TOGGLE_SIDESCAN_SERVICE = 'payload/toggle_sidescan'
+string SIDESCAN_STATUS_TOPIC = 'payload/sidescan_status'
 
 #UAVCAN bridge topics
 string GPS_FIX_TOPIC = 'core/can_gps'
@@ -47,7 +49,6 @@ string THRUSTERS_FEEDBACK_TOPIC = 'core/thrusters_fb'
 string PANIC_FB_TOPIC = 'core/panic_fb'
 
 string UTIL_CMD_TOPIC = 'core/util_cmd'
-string RPM_CMD_TOPIC = 'core/rpm_cmd'
 string ARRAY_CMD_TOPIC = 'core/util_array_cmd'
 string TCG_CMD_TOPIC = 'core/tcg_cmd'
 string DUAL_THRUSTER_CMD_TOPIC = 'core/thruster_cmd'
