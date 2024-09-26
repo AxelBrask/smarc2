@@ -22,3 +22,7 @@
 	path = vehicles/hardware/sam/sam_drivers
 	url = git@github.com:AxelBrask/sam_drivers.git
 	branch = humble
+[submodule "vehicles/hardware/sam/sam_common"]
+	path = vehicles/hardware/sam/sam_common
+	url = https://github.com/AxelBrask/sam_common.git
+	branch = humble
