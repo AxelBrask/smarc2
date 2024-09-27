@@ -47,6 +47,7 @@ string CONSUMED_CHARED_ARRAY_TOPIC = 'core/consumed_charged_array'
 string CTD_FB_TOPIC = 'core/ctd_fb'
 string THRUSTERS_FEEDBACK_TOPIC = 'core/thrusters_fb'
 string PANIC_FB_TOPIC = 'core/panic_fb'
+string LEAK_TOPIC_FB = 'core/leak_fb'
 
 string UTIL_CMD_TOPIC = 'core/util_cmd'
 string ARRAY_CMD_TOPIC = 'core/util_array_cmd'
