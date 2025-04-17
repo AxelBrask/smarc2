@@ -29,3 +29,6 @@
 	path = drivers/nmea_navsat_driver
 	url = git@github.com:smarc-project/nmea_navsat_driver.git
 	branch = ros2
+[submodule "navigation/localization/hydrobatic_localization"]
+	path = navigation/localization/hydrobatic_localization
+	url = git@github.com:AxelBrask/hydrobatic_localization.git
