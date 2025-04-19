@@ -3,6 +3,8 @@
 ROBOT_NAME=sam
 USE_SIM_TIME=false
 SSS_SAVE_PATH=/xavier_ssd/sidescan
+USE_MOTION_MODEL=false
+INFERERENCE_STRATEGY=FixedLagSmoothing
 
 SIM=${USE_SIM_TIME}
 SESSION=${ROBOT_NAME}_bringup
@@ -50,7 +52,8 @@ fi
 # state estimation stuff like pressure->depth, imu->tf etc
 tmux new-window -t $SESSION:1 -n 'dr'
 tmux select-window -t $SESSION:1
-tmux send-keys "ros2 launch sam_dead_reckoning sam_dr_launch.launch robot_name:=$ROBOT_NAME use_sim_time:=$USE_SIM_TIME" C-m
+tmux send-keys "ros2 launch hydrobatic_localization state_estimator.launch robot_name:=$ROBOT_NAME use_sim_time:=$USE_SIM_TIME use_motion_model:=$USE_MOTION_MODEL inference_strategy:=$INFERERENCE_STRATEGY" C-m
+
 #tmux send-keys "echo 'Not launching sam_dead_reckoning sam_dr_launch.launch until someone fixes it!'" C-m
 
 # BT, action servers etc.
