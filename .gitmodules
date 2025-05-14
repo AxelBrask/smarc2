@@ -44,3 +44,6 @@
 [submodule "navigation/localization/hydrobatic_localization"]
 	path = navigation/localization/hydrobatic_localization
 	url = git@github.com:AxelBrask/hydrobatic_localization.git
+[submodule "external_packages/smarc_modelling"]
+	path = external_packages/smarc_modelling
+	url = https://github.com/smarc-project/smarc_modelling.git
