@@ -1,13 +1,8 @@
 #! /bin/bash
-#ROBOT_NAME=sam_auv_v1
-ROBOT_NAME=sam
-USE_SIM_TIME=false
-SSS_SAVE_PATH=/xavier_ssd/sidescan
-USE_MOTION_MODEL=false
-INFERERENCE_STRATEGY=FixedLagSmoothing
-
-SIM=${USE_SIM_TIME}
+ROBOT_NAME=sam0
 SESSION=${ROBOT_NAME}_bringup
+USE_SIM_TIME=False
+
 # create a tmux session with a name
 tmux -2 new-session -d -s $SESSION
 
@@ -50,11 +45,32 @@ else
 fi    
 
 # state estimation stuff like pressure->depth, imu->tf etc
-tmux new-window -t $SESSION:1 -n 'dr'
-tmux select-window -t $SESSION:1
-tmux send-keys "ros2 launch hydrobatic_localization state_estimator.launch robot_name:=$ROBOT_NAME use_sim_time:=$USE_SIM_TIME use_motion_model:=$USE_MOTION_MODEL inference_strategy:=$INFERERENCE_STRATEGY" C-m
+tmux new-window -t $SESSION:0 -n 'dr'
+tmux rename-window "dr"
+# BT, action servers etc.
+tmux new-window -t $SESSION:1 -n 'bt'
+tmux rename-window "bt"
+# controllers that are "constantly running"
+tmux new-window -t $SESSION:2 -n 'control'
+# connection to different GUIs
+tmux new-window -t $SESSION:3 -n 'gui'
+# utility stuff like dubins planning and lat/lon conversions that other stuff rely on
+tmux new-window -t $SESSION:4 -n 'utils'
 
-#tmux send-keys "echo 'Not launching sam_dead_reckoning sam_dr_launch.launch until someone fixes it!'" C-m
+# for robot description launch. so we get base_link -> everything else
+tmux new-window -t $SESSION:8 -n 'description'
+# dummy stuff to temporarily let other stuff work
+tmux new-window -t $SESSION:9 -n 'dummies'
+
+# for the mqtt bridge.
+tmux new-window -t $SESSION:10 -n 'mqtt'
+
+
+
+# Now we launch things in each window.
+tmux select-window -t $SESSION:0
+#tmux send-keys "ros2 launch sam_dead_reckoning sam_dr_launch.launch robot_name:=$ROBOT_NAME" C-m
+tmux send-keys "echo 'Not launching sam_dead_reckoning sam_dr_launch.launch until someone fixes it!'" C-m
 
 # BT, action servers etc.
 tmux new-window -t $SESSION:2 -n 'bt'
@@ -79,8 +95,22 @@ tmux select-window -t $SESSION:5
 tmux send-keys "ros2 launch smarc_bringups utilities.launch robot_name:=$ROBOT_NAME" C-m
 
 
-# the real sam's username is "sam" and lolo's "lolo".
-# So we can switch on that.
+# Mostly static stuff that wont be giving much feedback
+tmux select-window -t $SESSION:8
+tmux send-keys "ros2 launch sam_description sam_description.launch robot_name:=$ROBOT_NAME" C-m
+
+tmux select-window -t $SESSION:9
+tmux send-keys "ros2 launch smarc_bringups dummies.launch robot_name:=$ROBOT_NAME" C-m
+
+tmux select-window -t $SESSION:10
+# To connect to our MQTT broker
+tmux send-keys "ros2 launch str_json_mqtt_bridge waraps_bridge.launch broker_addr:=20.240.40.232 broker_port:=1884 " C-m
+# For local testing: use defaults
+# tmux send-keys "ros2 launch str_json_mqtt_bridge waraps_bridge.launch robot_name:=$ROBOT_NAME" C-m
+
+# Launch the wasp_bt LAST, to give action servers time to start publishing heartbeats
+tmux select-window -t $SESSION:1
+tmux send-keys "ros2 launch wasp_bt wasp_bt.launch robot_name:=$ROBOT_NAME link_suffix:=$LINK_SUFFIX agent_type:=$AGENT_TYPE levels:=$LEVELS pulse_rate:=$PULSE_RATE use_sim_time:=$USE_SIM_TIME" C-m
 
 USERNAME=$(whoami)
 if [ $USERNAME != "sam" ]
